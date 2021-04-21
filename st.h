@@ -114,6 +114,7 @@ char *xstrdup(const char *);
 
 /* config.h globals */
 extern char *externalpipe_sigusr1[];
+extern char *externalpipe_sigusr2[];
 extern char *utmp;
 extern char *scroll;
 extern char *stty_args;

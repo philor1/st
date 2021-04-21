@@ -1,4 +1,5 @@
 char *externalpipe_sigusr1[] = {"/bin/sh", "-c", "externalpipe_buffer.sh st_strings_read"};
+char *externalpipe_sigusr2[] = {NULL};
 /* See LICENSE file for copyright and license details. */
 
 /*

@@ -156,6 +156,7 @@ static void execsh(char *, char **);
 static void stty(char **);
 static void sigchld(int);
 static void sigusr1(int);
+static void sigusr2(int);
 static void ttywriteraw(const char *, size_t);
 
 static void csidump(void);
@@ -231,6 +232,8 @@ static const uchar utfbyte[UTF_SIZ + 1] = {0x80,    0, 0xC0, 0xE0, 0xF0};
 static const uchar utfmask[UTF_SIZ + 1] = {0xC0, 0x80, 0xE0, 0xF0, 0xF8};
 static const Rune utfmin[UTF_SIZ + 1] = {       0,    0,  0x80,  0x800,  0x10000};
 static const Rune utfmax[UTF_SIZ + 1] = {0x10FFFF, 0x7F, 0x7FF, 0xFFFF, 0x10FFFF};
+
+extern void config_init();
 
 ssize_t
 xwrite(int fd, const char *s, size_t len)
@@ -725,6 +728,14 @@ sigusr1(int unused)
 }
 
 void
+sigusr2(int unused)
+{
+  static Arg a = {.v = externalpipe_sigusr2};
+  externalpipe(&a);
+  xreload();
+}
+
+void
 sigchld(int a)
 {
 	int stat;
@@ -781,6 +792,12 @@ ttynew(const char *line, char *cmd, const char *out, char **args)
 	sigemptyset(&sa.sa_mask);
 	sa.sa_flags = SA_RESTART;
 	sigaction(SIGUSR1, &sa, NULL);
+
+	static struct sigaction sb;
+	sb.sa_handler = sigusr2;
+	sigemptyset(&sb.sa_mask);
+	sb.sa_flags = SA_RESTART;
+	sigaction(SIGUSR2, &sb, NULL);
 
 	int m, s;
 
