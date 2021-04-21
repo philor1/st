@@ -278,6 +278,7 @@ void
 invert(const Arg *dummy)
 {
 	invertcolors = !invertcolors;
+	xclearwin();
 	redraw();
 }
 
