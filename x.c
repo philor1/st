@@ -39,6 +39,13 @@ typedef struct {
 #define XK_NO_MOD     0
 #define XK_SWITCH_MOD (1<<13)
 
+typedef struct {
+	Atom xtarget;
+	char *primary, *clipboard;
+	struct timespec tclick1;
+	struct timespec tclick2;
+} XSelection;
+
 /* function definitions used in config.h */
 static void changealpha(const Arg *);
 static void clipcopy(const Arg *);
@@ -146,7 +153,7 @@ static void (*handler[LASTEvent])(XEvent *) = {
 Term term;
 DC dc;
 XWindow xw;
-XSelection xsel;
+static XSelection xsel;
 TermWindow win;
 
 /* Font Ring Cache */
@@ -1840,11 +1847,7 @@ xfinishdraw(void)
 		}
 		if (!im->pixmap) {
 			im->pixmap = (void *)XCreatePixmap(xw.dpy, xw.win, im->width, im->height,
-				#if ALPHA_PATCH
 				xw.depth
-				#else
-				DefaultDepth(xw.dpy, xw.scr)
-				#endif // ALPHA_PATCH
 			);
 			XImage ximage = {
 				.format = ZPixmap,
@@ -1858,11 +1861,7 @@ xfinishdraw(void)
 				.bytes_per_line = im->width * 4,
 				.bitmap_unit = 32,
 				.bitmap_pad = 32,
-				#if ALPHA_PATCH
 				.depth = xw.depth
-				#else
-				.depth = 24
-				#endif // ALPHA_PATCH
 			};
 			XPutImage(xw.dpy, (Drawable)im->pixmap, dc.gc, &ximage, 0, 0, 0, 0, im->width, im->height);
 			free(im->pixels);

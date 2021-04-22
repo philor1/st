@@ -140,14 +140,9 @@ typedef union {
 typedef struct {
 	int tw, th; /* tty width and height */
 	int w, h; /* window width and height */
-	#if ANYSIZE_PATCH
-	int hborderpx, vborderpx;
-	#endif // ANYSIZE_PATCH
 	int ch; /* char height */
 	int cw; /* char width  */
-	#if VERTCENTER_PATCH
 	int cyo; /* char y offset */
-	#endif // VERTCENTER_PATCH
 	int mode; /* window state/mode flags */
 	int cursor; /* cursor style */
 } TermWindow;
@@ -170,19 +165,10 @@ typedef struct {
 	XSetWindowAttributes attrs;
 	int scr;
 	int isfixed; /* is fixed geometry? */
-	#if ALPHA_PATCH
 	int depth; /* bit depth */
-	#endif // ALPHA_PATCH
 	int l, t; /* left and top offset */
 	int gm; /* geometry mask */
 } XWindow;
-
-typedef struct {
-	Atom xtarget;
-	char *primary, *clipboard;
-	struct timespec tclick1;
-	struct timespec tclick2;
-} XSelection;
 
 /* types used in config.h */
 typedef struct {
@@ -297,6 +283,5 @@ extern float alpha;
 
 extern DC dc;
 extern XWindow xw;
-extern XSelection xsel;
 extern TermWindow win;
 extern Term term;
